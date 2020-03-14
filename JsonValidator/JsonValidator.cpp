@@ -17,6 +17,30 @@ string readFileToString(string filename)
 	return buf.str();
 }
 
+//Remove '\n' '\r' and ' ' before and after input string
+string& trim(string& str)
+{
+	string::size_type pos = str.find_last_not_of(' ');
+	pos = str.find_last_not_of('\r');
+	pos = str.find_last_not_of('\n');
+	if (pos != string::npos)
+	{
+		str.erase(pos + 1);
+		pos = str.find_first_not_of(' ');
+		pos = str.find_first_not_of('\r');
+		pos = str.find_first_not_of('\n');
+		if (pos != string::npos)
+		{
+			str.erase(0, pos);
+		}
+	}
+	else
+	{
+		str.erase(str.begin(), str.end());
+	}
+	return str;
+}
+
 //Return next char
 char nextChar()
 {
@@ -29,13 +53,13 @@ char nextChar()
 	return current_char;
 }
 
-//Skip the space in the JSON file
+//Skip the space in the JSON file and return next real char
 char nextRealChar()
 {
 	do
 	{
 		nextChar();
-	} while (current_char == '\n' || current_char == '\r' || current_char == ' ' || current_char == 0);
+	} while (current_char == '\n' || current_char == '\r' || current_char == ' '|| current_char == '\0');
 	if (current_char != 0 && (current_char < 32 || current_char == 127))
 	{
 		throw exception("Invalid char found");
@@ -85,6 +109,7 @@ void validateString()
 
 //validate the number structure
 void validateNumber()
+
 {
 	if (current_char == '-')
 	{
@@ -149,7 +174,7 @@ void validateTFN()
 		sb.append(1,current_char);
 		current_char = nextChar();
 	} while (current_char >= ' ' && special.find(current_char) == string::npos && current_char != 127);
-	if (!sb.compare("true") && !sb.compare("false") && !sb.compare("null"))
+	if (sb.compare("true")==1 && sb.compare("false")==1 && sb.compare("null")==1)
 	{
 		sb.erase(0);
 		throw exception("Invalid true/false/null");
@@ -349,25 +374,31 @@ bool isJSON(string input)
 			return false;
 		}
 	}
-	catch (const std::runtime_error & e)
+	catch (exception e)
 	{
 		return false;
 	}
 }
 
+//Main function (Program entry)
+//There are 33 fail cases and 3 pass cases under test folder
 int main()
 {
 	int count_fail = 0;
 	int count_pass = 0;
-	/*cout << "For 33 fail test cases:" << endl;
+	cout << "For 33 fail test cases:" << endl;
 	for (int i = 1; i <= 33; i++)
 	{
 		try
 		{
 			string input_file = readFileToString("test/fail" + to_string(i) + ".json");
+			trim(input_file);
 			if (isJSON(input_file) == false)
 			{
 				count_fail++;
+			}
+			else {
+				cout << "case "<< i << " pass" << endl;
 			}
 		}
 		catch (exception e)
@@ -375,13 +406,14 @@ int main()
 			count_fail++;
 		}
 	}
-	cout << count_fail << " fail and " << (33 - count_fail) << " pass" << endl;*/
+	cout << count_fail << " fail and " << (33 - count_fail) << " pass" << endl;
 	cout << "For 3 pass test cases:" << endl;
 	for (int i = 1; i <= 3; i++)
 	{
 		try
 		{
 			string input_file = readFileToString("test/pass" + to_string(i) + ".json");
+			trim(input_file);
 			if (isJSON(input_file) == true)
 			{
 				count_pass++;

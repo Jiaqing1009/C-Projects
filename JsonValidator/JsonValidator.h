@@ -1,4 +1,5 @@
 #include <string>
+#include<cstring>
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -15,6 +16,9 @@ private:
 
 	//Read a file and transfer it to a String by giving its file path
 	string readFileToString(string filename);
+
+	//Remove '\n' '\r' and ' ' before and after input string
+	string& trim(string& str);
 
 public:
 	//Return next char
