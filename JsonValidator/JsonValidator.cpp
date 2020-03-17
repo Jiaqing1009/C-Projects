@@ -381,60 +381,30 @@ bool isJSON(string input)
 }
 
 //Main function (Program entry)
-//There are 33 fail cases and 3 pass cases under test folder
 int main()
 {
-	int count_fail = 0;
-	int count_pass = 0;
-	cout << "For 33 fail test cases:" << endl;
-	for (int i = 1; i <= 33; i++)
+	string file_name;
+	cin >> file_name;
+	clock_t begin, end;
+	double cost;
+	begin = clock();
+	try {
+		string input_file = readFileToString(file_name);
+		trim(input_file);
+		if (isJSON(input_file) == true)
+		{
+			cout << "pass" << endl;
+		}
+		else {
+			cout << "fail" << endl;
+		}
+	}
+	catch (exception e)
 	{
-		try
-		{
-			string input_file = readFileToString("test/fail" + to_string(i) + ".json");
-			trim(input_file);
-			if (isJSON(input_file) == false)
-			{
-				count_fail++;
-			}
-			else {
-				cout << "case "<< i << " pass" << endl;
-			}
-		}
-		catch (exception e)
-		{
-			count_fail++;
-		}
-	}
-	cout << count_fail << " fail and " << (33 - count_fail) << " pass" << endl;
-	cout << "For 3 pass test cases:" << endl;
-	for (int i = 1; i <= 3; i++)
-	{
-		try
-		{
-			string input_file = readFileToString("test/pass" + to_string(i) + ".json");
-			trim(input_file);
-			if (isJSON(input_file) == true)
-			{
-				count_pass++;
-			}
-		}
-		catch (exception e)
-		{
-		}
-	}
-	cout << count_pass << " pass and " << (3 - count_pass) << " fail" << endl;
-	//Add one specific file here, just change the filepath
-	cout << "For the given case:" << endl;
-	string file = "test.txt";
-	string str;
-	str = readFileToString(file);
-	bool flag = isJSON(str);
-	if (flag == true) {
-		cout << "pass" << endl;
-	}
-	else{
 		cout << "fail" << endl;
 	}
+	end = clock();
+	cost = (double)(end - begin) / CLOCKS_PER_SEC;
+	cout << "constant CLOCKS_PER_SEC is: " << CLOCKS_PER_SEC << ", time cost is: " << cost << "secs" << endl;
 	return 0;
 }
