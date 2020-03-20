@@ -1,4 +1,4 @@
-﻿#include"JsonValidator.h"
+#include"JsonValidator.h"
 
 int array_pointer = 0;
 string input_string;
@@ -62,7 +62,8 @@ char nextRealChar()
 	} while (current_char == '\n' || current_char == '\r' || current_char == ' '|| current_char == '\0');
 	if (current_char != 0 && (current_char < 32 || current_char == 127))
 	{
-		throw exception("Invalid char found");
+        logic_error ex("Invalid char found");
+        throw std::exception(ex);
 	}
 	return current_char;
 }
@@ -78,7 +79,8 @@ void validateString()
 		{
 			if (special.find(nextChar()) == string::npos)
 			{
-				throw exception("Invalid escape char found"); //fixed char after '\' check
+                logic_error ex("Invalid escape char found"); //fixed char after '\' check
+                throw std::exception(ex);
 			}
 			if (current_char == 'u')
 			{ //check unicode format 0-9 a-f A-F
@@ -87,7 +89,8 @@ void validateString()
 					nextChar(); // check unicode format
 					if (current_char < 48 || (current_char > 57 && current_char < 65) || (current_char > 70 && current_char < 97) || current_char > 102)
 					{
-						throw exception("Invalid hex found");
+                        logic_error ex("Invalid hex found");
+                        throw std::exception(ex);
 					}
 				}
 			}
@@ -99,11 +102,13 @@ void validateString()
 	} while (current_char >= 32 && current_char != 34 && current_char != 127);
 	if (current_char == 0)
 	{
-		throw exception("Unclosed quote found");
+        logic_error ex("Unclosed quote found");
+        throw std::exception(ex);
 	}
 	else if (current_char != 34)
 	{
-		throw exception("Invalid string found");
+        logic_error ex("Invalid string found");
+        throw std::exception(ex);
 	}
 }
 
@@ -128,7 +133,8 @@ void validateNumber()
 	}
 	else
 	{
-		throw exception("Invalid number found");
+        logic_error ex("Invalid number found");
+        throw std::exception(ex);
 	}
 	if (current_char == '.')
 	{ //fraction
@@ -142,7 +148,8 @@ void validateNumber()
 		}
 		else
 		{
-			throw exception("Invalid number found");
+            logic_error ex("Invalid number found");
+            throw std::exception(ex);
 		}
 	}
 	if (current_char == 'e' || current_char == 'E')
@@ -154,7 +161,8 @@ void validateNumber()
 		}
 		if (current_char < 48 || current_char > 57)
 		{
-			throw exception("Invalid number found");
+            logic_error ex("Invalid number found");
+            throw std::exception(ex);
 		}
 		while (current_char >= 48 && current_char <= 57)
 		{
@@ -177,7 +185,8 @@ void validateTFN()
 	if (sb.compare("true")==1 && sb.compare("false")==1 && sb.compare("null")==1)
 	{
 		sb.erase(0);
-		throw exception("Invalid true/false/null");
+        logic_error ex("Invalid true/false/null");
+        throw std::exception(ex);
 	}
 	array_pointer--;
 	sb.erase(0);
@@ -193,13 +202,15 @@ bool validateObject()
 	}
 	else if (current_char == ',')
 	{
-		throw exception("Extra comma found"); //extra comma after '{'
+        logic_error ex("Extra comma found"); //extra comma after '{'
+		throw std::exception(ex);
 	}
 	while (true)
 	{
 		if (current_char == '}')
 		{
-			throw exception("Extra comma found"); //extra comma, this is testing while it has iterations
+            logic_error ex("Extra comma found"); //extra comma, this is testing while it has iterations
+            throw std::exception(ex);
 		}
 		else if (current_char == '"')
 		{
@@ -216,7 +227,8 @@ bool validateObject()
 		nextRealChar(); //go to the value
 		if (current_char == ',')
 		{
-			throw exception("No values in key-value pair"); //No values in the pair
+            logic_error ex("No values in key-value pair"); //No values in the pair
+			throw std::exception(ex);
 		}
 		else if (current_char == '"')
 		{
@@ -271,13 +283,15 @@ bool validateArray()
 	}
 	else if (current_char == ',')
 	{
-		throw exception("Extra comma found"); //extra comma after '['
+        logic_error ex("Extra comma found"); //extra comma after '['
+        throw std::exception(ex);
 	}
 	while (true)
 	{
 		if (current_char == ']')
 		{
-			throw exception("Extra comma found"); //extra comma, this is testing while it has iterations
+            logic_error ex("Extra comma found"); //extra comma, this is testing while it has iterations
+            throw std::exception(ex);
 		}
 		else if (current_char == '"')
 		{

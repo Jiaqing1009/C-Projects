@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/jiaqingchen/CProjects/JsonValidator/JsonValidator.cpp
+JsonValidator.h
+/Users/jiaqingchen/CProjects/JsonValidator/JsonValidator.h
+
+/Users/jiaqingchen/CProjects/JsonValidator/JsonValidator.h
+string
+-
+cstring
+-
+iostream
+-
+fstream
+-
+sstream
+-
+stdlib.h
+-
+stdio.h
+-
+time.h
+-
+
