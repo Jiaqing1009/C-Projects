@@ -8,6 +8,5 @@ Some correct and wrong test cases are included in folder jsonchecker.
 
 Some larger test cases are included in folder jsonexamples.
 
-There is a contrast of three files (larger than 2000kb) with origin code in origin_code_results.
-
-canada.json is 2,199kb, gsoc-2018.json is 3,250kb and marine_ik.json is 2,914kb.
+The renttherunway_final_data.json, which is 120,364 KB, is also given in the following link:
+https://www.kaggle.com/rmisra/clothing-fit-dataset-for-size-recommendation
