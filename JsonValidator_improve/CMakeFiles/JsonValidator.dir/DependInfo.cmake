@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/jiaqingchen/CProjects/JsonValidator/JsonValidator.cpp" "/Users/jiaqingchen/CProjects/JsonValidator/CMakeFiles/JsonValidator.dir/JsonValidator.cpp.o"
+  "/Users/jiaqingchen/CProjects/JsonValidator_improve/JsonValidator.cpp" "/Users/jiaqingchen/CProjects/JsonValidator_improve/CMakeFiles/JsonValidator.dir/JsonValidator.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "Clang")
 

@@ -273,6 +273,87 @@ bool validateObject()
 	}
 }
 
+//pthread method to validate the object structure
+bool validateObject_new()
+{
+    nextRealChar();
+    if (current_char == '}')
+    {
+        return true; //empty object, return true
+    }
+    else if (current_char == ',')
+    {
+        logic_error ex("Extra comma found"); //extra comma after '{'
+        throw std::exception(ex);
+    }
+    while (true)
+    {
+        if (current_char == '}')
+        {
+            logic_error ex("Extra comma found"); //extra comma, this is testing while it has iterations
+            throw std::exception(ex);
+        }
+        else if (current_char == '"')
+        {
+            validateString(); //string key
+        }
+        else
+        {
+            return false;
+        }
+        if (nextRealChar() != ':')
+        {
+            return false;
+        }
+        nextRealChar(); //go to the value
+        if (current_char == ',')
+        {
+            logic_error ex("No values in key-value pair"); //No values in the pair
+            throw std::exception(ex);
+        }
+        else if (current_char == '"')
+        {
+            validateString(); //string
+        }
+        else if (current_char == '-' || (current_char >= 48 && current_char <= 57))
+        {
+            validateNumber(); //number
+        }
+        else if (current_char == '{')
+        {
+            if (!validateObject())
+            { //object
+                return false;
+            }
+        }
+        else if (current_char == '[')
+        {
+            if (!validateArray())
+            { //array
+                return false;
+            }
+        }
+        else if (current_char == 't' || current_char == 'f' || current_char == 'n')
+        {
+            validateTFN(); //test the special value true/false/null
+        }
+        else
+        {
+            return false;
+        }
+        switch (nextRealChar())
+        {
+        case ',':
+            nextRealChar(); //it still has other elements
+            continue;
+        case '}':
+            return true; //no other elements
+        default:
+            return false; //error char
+        }
+    }
+}
+
 //validate the array structure
 bool validateArray()
 {
@@ -395,10 +476,9 @@ bool isJSON(string input)
 }
 
 //Main function (Program entry)
-int main()
+int main(int argc,char *argv[])
 {
-	string file_name;
-	cin >> file_name;
+    string file_name = argv[1];
 	clock_t begin, end;
 	double cost;
 	begin = clock();

@@ -48,10 +48,10 @@ RM = /Applications/CMake.app/Contents/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/jiaqingchen/CProjects/JsonValidator
+CMAKE_SOURCE_DIR = /Users/jiaqingchen/CProjects/JsonValidator_improve
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/jiaqingchen/CProjects/JsonValidator
+CMAKE_BINARY_DIR = /Users/jiaqingchen/CProjects/JsonValidator_improve
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/jiaqingchen/CProjects/JsonValidator/CMakeFiles /Users/jiaqingchen/CProjects/JsonValidator/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/jiaqingchen/CProjects/JsonValidator_improve/CMakeFiles /Users/jiaqingchen/CProjects/JsonValidator_improve/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/jiaqingchen/CProjects/JsonValidator/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/jiaqingchen/CProjects/JsonValidator_improve/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

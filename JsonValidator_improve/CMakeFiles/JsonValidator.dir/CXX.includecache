@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/Users/jiaqingchen/CProjects/JsonValidator/JsonValidator.cpp
+/Users/jiaqingchen/CProjects/JsonValidator_improve/JsonValidator.cpp
 JsonValidator.h
-/Users/jiaqingchen/CProjects/JsonValidator/JsonValidator.h
+/Users/jiaqingchen/CProjects/JsonValidator_improve/JsonValidator.h
 
-/Users/jiaqingchen/CProjects/JsonValidator/JsonValidator.h
+/Users/jiaqingchen/CProjects/JsonValidator_improve/JsonValidator.h
 string
 -
 cstring
@@ -26,5 +26,7 @@ stdlib.h
 stdio.h
 -
 time.h
+-
+pthread.h
 -
 
