@@ -8,7 +8,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "/Users/jiaqingchen/CProjects/JsonValidator_improve",
+            "program": "${workspaceFolder}/JsonValidator",
             "args": ["jsonchecker/pass3.json"],
             "cwd": "${workspaceFolder}"
         }
