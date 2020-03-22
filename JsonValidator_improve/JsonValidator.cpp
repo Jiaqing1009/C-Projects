@@ -3,8 +3,14 @@
 int array_pointer = 0;
 string input_string;
 char current_char = '\0';
+vector<string> validate_string;
+
+struct thread_data{
+    string input_string;
+};
 
 bool validateArray();
+bool validateArray_parallel();
 
 //Read a file and transfer it to a String by giving its file path
 string readFileToString(string filename)
@@ -112,9 +118,55 @@ void validateString()
 	}
 }
 
+//validate the string structure in parallel
+void *validateString_parallel(void *thread_string)
+{
+    struct thread_data *my_data;
+    my_data = (struct thread_data *) thread_string;
+    string special = "\"\\/bfnrtu";
+    int index = 0 ;
+    do
+    {
+        if (my_data->input_string[index] == '\\')
+        {
+            if (special.find(my_data->input_string[index++]) == string::npos)
+            {
+                logic_error ex("Invalid escape char found"); //fixed char after '\' check
+                throw std::exception(ex);
+            }
+            if (my_data->input_string[index] == 'u')
+            { //check unicode format 0-9 a-f A-F
+                for (int i = 0; i < 4; i++)
+                {
+                    char validate_unicode = my_data->input_string[index++]; // check unicode format
+                    if (validate_unicode < 48 || (validate_unicode > 57 && validate_unicode < 65) || (validate_unicode > 70 && validate_unicode < 97) || validate_unicode > 102)
+                    {
+                        logic_error ex("Invalid hex found");
+                        throw std::exception(ex);
+                    }
+                }
+            }
+            else if (my_data->input_string[index] == '"')
+            {
+                index++; //make the '\"' correct while it comes with the '"'
+            }
+        }
+    } while (my_data->input_string[index] >= 32 && my_data->input_string[index] != 34 && my_data->input_string[index] != 127);
+    if (my_data->input_string[index] == 0)
+    {
+        logic_error ex("Unclosed quote found");
+        throw std::exception(ex);
+    }
+    else if (my_data->input_string[index] != 34)
+    {
+        logic_error ex("Invalid string found");
+        throw std::exception(ex);
+    }
+    pthread_exit(NULL);
+}
+
 //validate the number structure
 void validateNumber()
-
 {
 	if (current_char == '-')
 	{
@@ -273,8 +325,36 @@ bool validateObject()
 	}
 }
 
-//pthread method to validate the object structure
-bool validateObject_new()
+//skip and store the string in the first step
+void skipString()
+{
+    string skip_string = "";
+    bool check_special = false;
+    do{
+        check_special = false;
+        current_char = nextChar();
+        if(current_char == '\\'){
+            check_special = true ;
+            skip_string = skip_string + current_char;
+            current_char = nextChar();
+        }
+        skip_string = skip_string + current_char;//add next char until this is the end of the string
+    }while (current_char >= 32 && current_char != 34 && current_char != 127 && check_special == false);
+    if (current_char == 0)
+    {
+        logic_error ex("Unclosed quote found");
+        throw std::exception(ex);
+        
+    }else if (current_char != 34)
+    {
+        logic_error ex("Invalid string found");
+        throw std::exception(ex);
+    }
+    validate_string.push_back(skip_string);
+}
+
+//validate the object structure in parallel
+bool validateObject_parallel()
 {
     nextRealChar();
     if (current_char == '}')
@@ -295,7 +375,7 @@ bool validateObject_new()
         }
         else if (current_char == '"')
         {
-            validateString(); //string key
+            skipString(); //skip the string key
         }
         else
         {
@@ -313,7 +393,7 @@ bool validateObject_new()
         }
         else if (current_char == '"')
         {
-            validateString(); //string
+            skipString(); //skip the string value
         }
         else if (current_char == '-' || (current_char >= 48 && current_char <= 57))
         {
@@ -321,14 +401,14 @@ bool validateObject_new()
         }
         else if (current_char == '{')
         {
-            if (!validateObject())
+            if (!validateObject_parallel())
             { //object
                 return false;
             }
         }
         else if (current_char == '[')
         {
-            if (!validateArray())
+            if (!validateArray_parallel())
             { //array
                 return false;
             }
@@ -417,6 +497,69 @@ bool validateArray()
 	}
 }
 
+//validate the array structure in parallel
+bool validateArray_parallel()
+{
+	nextRealChar();
+	if (current_char == ']')
+	{
+		return true; //empty array, return true
+	}
+	else if (current_char == ',')
+	{
+        logic_error ex("Extra comma found"); //extra comma after '['
+        throw std::exception(ex);
+	}
+	while (true)
+	{
+		if (current_char == ']')
+		{
+            logic_error ex("Extra comma found"); //extra comma, this is testing while it has iterations
+            throw std::exception(ex);
+		}
+		else if (current_char == '"')
+		{
+			skipString(); //skip the string
+		}
+		else if (current_char == '-' || (current_char >= 48 && current_char <= 57))
+		{
+			validateNumber(); //number
+		}
+		else if (current_char == '{')
+		{
+			if (!validateObject_parallel())
+			{ //object
+				return false;
+			}
+		}
+		else if (current_char == '[')
+		{
+			if (!validateArray_parallel())
+			{ //array
+				return false;
+			}
+		}
+		else if (current_char == 't' || current_char == 'f' || current_char == 'n')
+		{
+			validateTFN(); //test the special value true/false/null
+		}
+		else
+		{
+			return false;
+		}
+		switch (nextRealChar())
+		{
+		case ',':
+			nextRealChar(); //it still has other elements
+			continue;
+		case ']':
+			return true; //no other elements
+		default:
+			return false; //error char
+		}
+	}
+}
+
 //Main function to validate the JSON file
 bool isJSON(string input)
 {
@@ -437,7 +580,7 @@ bool isJSON(string input)
 				return true; //there is nothing after the outset array
 			}
 			array_pointer--; //Go back one char and then go to the array validator
-			if (validateArray() == true)
+			if (validateArray_parallel() == true)
 			{
 				if (array_pointer < input.length() && nextRealChar() != input[array_pointer])
 				{
@@ -456,7 +599,7 @@ bool isJSON(string input)
 				return true; //there is nothing after the outset object
 			}
 			array_pointer--; //Go back one char and then go to the object validator part
-			if (validateObject() == true)
+			if (validateObject_parallel() == true)
 			{
 				if (array_pointer < input.length() && nextRealChar() != input[array_pointer])
 				{
@@ -475,6 +618,37 @@ bool isJSON(string input)
 	}
 }
 
+//Main function to validate the JSON file in parallel
+bool isJSON_parallel(string input)
+{
+    bool first_step = isJSON(input);
+    if(first_step == false){
+        return false;
+    }
+    try{
+        int num_threads = validate_string.size();
+        pthread_t tids[num_threads];
+        struct thread_data td[num_threads];
+        int i;
+        int ret;
+        for(i = 0; i < num_threads; i++)
+        {
+            td[i].input_string = validate_string[i];
+            ret = pthread_create(&tids[i], NULL, validateString_parallel, (void*)&td[i]);
+            if (ret)
+            {
+                cout << "Error:unable to create thread "<< ret << endl;
+                exit(-1);
+            }
+        }
+        pthread_exit(NULL);
+    }catch (exception e)
+        {
+            return false;
+        }
+    return true;
+}
+
 //Main function (Program entry)
 int main(int argc,char *argv[])
 {
@@ -485,7 +659,7 @@ int main(int argc,char *argv[])
 	try {
 		string input_file = readFileToString(file_name);
 		trim(input_file);
-		if (isJSON(input_file) == true)
+		if (isJSON_parallel(input_file) == true)
 		{
 			cout << "pass" << endl;
 		}

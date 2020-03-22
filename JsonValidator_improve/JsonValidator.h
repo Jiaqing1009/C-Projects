@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <pthread.h>
+#include <vector>
 using namespace std;
 
 class JsonValidator
@@ -15,6 +16,11 @@ private:
 	int array_pointer = 0;
 	string input_string;
 	char current_char = '\0';
+	vector<string> validate_string;
+	
+	struct thread_data{
+		string input_string;
+	};
 
 	//Read a file and transfer it to a String by giving its file path
 	string readFileToString(string filename);
@@ -23,6 +29,7 @@ private:
 	string& trim(string& str);
 
 public:
+
 	//Return next char
 	char nextChar();
 
@@ -32,11 +39,20 @@ public:
 	//validate the array structure
 	bool validateArray();
 
+	//validate the array structure in parallel
+	bool validateArray_parallel();
+
 	//validate the object structure
 	bool validateObject();
 
+	//validate the object structure in parallel
+	bool validateObject_parallel();
+
 	//validate the string structure
 	void validateString();
+
+	//validate the string structure in parallel
+	void *validateString_parallel(void *thread_string);
 
 	//validate the number structure
 	void validateNumber();
@@ -47,5 +63,9 @@ public:
 	//Main function to validate the JSON file
 	bool isJSON(const std::wstring &input);
 
-	int main();
+	//Main function to validate the JSON file in parallel
+	bool isJSON_parallel(string input);
+
+	//Main function (Program entry)
+	int main(int argc,char *argv[]);
 };
