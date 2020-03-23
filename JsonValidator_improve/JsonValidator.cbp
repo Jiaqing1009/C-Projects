@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="JsonValidator"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="clang"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/jiaqingchen/CProjects/JsonValidator_improve"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/jiaqingchen/CProjects/JsonValidator_improve"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/jiaqingchen/CProjects/JsonValidator_improve"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="JsonValidator">
+				<Option output="/Users/jiaqingchen/CProjects/JsonValidator_improve/JsonValidator" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/jiaqingchen/CProjects/JsonValidator_improve"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/Users/jiaqingchen/CProjects/JsonValidator_improve/JsonValidator.h"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 JsonValidator"/>
+					<CompileFile command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="JsonValidator/fast">
+				<Option output="/Users/jiaqingchen/CProjects/JsonValidator_improve/JsonValidator" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/jiaqingchen/CProjects/JsonValidator_improve"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/Users/jiaqingchen/CProjects/JsonValidator_improve/JsonValidator.h"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 JsonValidator/fast"/>
+					<CompileFile command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/Users/jiaqingchen/opt/anaconda3/bin/make -f &quot;/Users/jiaqingchen/CProjects/JsonValidator_improve/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/jiaqingchen/CProjects/JsonValidator_improve/JsonValidator.cpp">
+			<Option target="JsonValidator"/>
+		</Unit>
+		<Unit filename="/Users/jiaqingchen/CProjects/JsonValidator_improve/JsonValidator.h">
+			<Option target="JsonValidator"/>
+		</Unit>
+		<Unit filename="/Users/jiaqingchen/CProjects/JsonValidator_improve/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

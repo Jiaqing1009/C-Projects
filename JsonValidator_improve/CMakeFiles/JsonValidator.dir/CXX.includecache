@@ -13,8 +13,6 @@ JsonValidator.h
 /Users/jiaqingchen/CProjects/JsonValidator_improve/JsonValidator.h
 string
 -
-cstring
--
 iostream
 -
 fstream
@@ -23,12 +21,12 @@ sstream
 -
 stdlib.h
 -
-stdio.h
--
 time.h
 -
 pthread.h
 -
 vector
+-
+thread
 -
 

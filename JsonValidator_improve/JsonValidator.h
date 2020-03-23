@@ -1,13 +1,15 @@
+#ifndef JSONVALIDATOR_H_
+#define JSONVALIDATOR_H_
+
 #include <string>
-#include <cstring>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
-#include <stdio.h>
 #include <time.h>
 #include <pthread.h>
 #include <vector>
+#include <thread>
 using namespace std;
 
 class JsonValidator
@@ -36,20 +38,11 @@ public:
 	//Skip the space in the JSON file
 	char nextRealChar();
 
-	//validate the array structure
-	bool validateArray();
-
 	//validate the array structure in parallel
 	bool validateArray_parallel();
 
-	//validate the object structure
-	bool validateObject();
-
 	//validate the object structure in parallel
 	bool validateObject_parallel();
-
-	//validate the string structure
-	void validateString();
 
 	//validate the string structure in parallel
 	void *validateString_parallel(void *thread_string);
@@ -69,3 +62,5 @@ public:
 	//Main function (Program entry)
 	int main(int argc,char *argv[]);
 };
+
+#endif

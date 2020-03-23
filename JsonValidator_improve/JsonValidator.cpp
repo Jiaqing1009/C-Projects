@@ -9,7 +9,6 @@ struct thread_data{
     string input_string;
 };
 
-bool validateArray();
 bool validateArray_parallel();
 
 //Read a file and transfer it to a String by giving its file path
@@ -74,50 +73,6 @@ char nextRealChar()
 	return current_char;
 }
 
-//validate the string structure
-void validateString()
-{
-	string special = "\"\\/bfnrtu";
-	do
-	{
-		current_char = nextChar();
-		if (current_char == '\\')
-		{
-			if (special.find(nextChar()) == string::npos)
-			{
-                logic_error ex("Invalid escape char found"); //fixed char after '\' check
-                throw std::exception(ex);
-			}
-			if (current_char == 'u')
-			{ //check unicode format 0-9 a-f A-F
-				for (int i = 0; i < 4; i++)
-				{
-					nextChar(); // check unicode format
-					if (current_char < 48 || (current_char > 57 && current_char < 65) || (current_char > 70 && current_char < 97) || current_char > 102)
-					{
-                        logic_error ex("Invalid hex found");
-                        throw std::exception(ex);
-					}
-				}
-			}
-			else if (current_char == '"')
-			{
-				nextChar(); //make the '\"' correct while it comes with the '"'
-			}
-		}
-	} while (current_char >= 32 && current_char != 34 && current_char != 127);
-	if (current_char == 0)
-	{
-        logic_error ex("Unclosed quote found");
-        throw std::exception(ex);
-	}
-	else if (current_char != 34)
-	{
-        logic_error ex("Invalid string found");
-        throw std::exception(ex);
-	}
-}
-
 //validate the string structure in parallel
 void *validateString_parallel(void *thread_string)
 {
@@ -162,7 +117,7 @@ void *validateString_parallel(void *thread_string)
         logic_error ex("Invalid string found");
         throw std::exception(ex);
     }
-    pthread_exit(NULL);
+    pthread_exit(nullptr);
 }
 
 //validate the number structure
@@ -242,87 +197,6 @@ void validateTFN()
 	}
 	array_pointer--;
 	sb.erase(0);
-}
-
-//validate the object structure
-bool validateObject()
-{
-	nextRealChar();
-	if (current_char == '}')
-	{
-		return true; //empty object, return true
-	}
-	else if (current_char == ',')
-	{
-        logic_error ex("Extra comma found"); //extra comma after '{'
-		throw std::exception(ex);
-	}
-	while (true)
-	{
-		if (current_char == '}')
-		{
-            logic_error ex("Extra comma found"); //extra comma, this is testing while it has iterations
-            throw std::exception(ex);
-		}
-		else if (current_char == '"')
-		{
-			validateString(); //string key
-		}
-		else
-		{
-			return false;
-		}
-		if (nextRealChar() != ':')
-		{
-			return false;
-		}
-		nextRealChar(); //go to the value
-		if (current_char == ',')
-		{
-            logic_error ex("No values in key-value pair"); //No values in the pair
-			throw std::exception(ex);
-		}
-		else if (current_char == '"')
-		{
-			validateString(); //string
-		}
-		else if (current_char == '-' || (current_char >= 48 && current_char <= 57))
-		{
-			validateNumber(); //number
-		}
-		else if (current_char == '{')
-		{
-			if (!validateObject())
-			{ //object
-				return false;
-			}
-		}
-		else if (current_char == '[')
-		{
-			if (!validateArray())
-			{ //array
-				return false;
-			}
-		}
-		else if (current_char == 't' || current_char == 'f' || current_char == 'n')
-		{
-			validateTFN(); //test the special value true/false/null
-		}
-		else
-		{
-			return false;
-		}
-		switch (nextRealChar())
-		{
-		case ',':
-			nextRealChar(); //it still has other elements
-			continue;
-		case '}':
-			return true; //no other elements
-		default:
-			return false; //error char
-		}
-	}
 }
 
 //skip and store the string in the first step
@@ -432,69 +306,6 @@ bool validateObject_parallel()
             return false; //error char
         }
     }
-}
-
-//validate the array structure
-bool validateArray()
-{
-	nextRealChar();
-	if (current_char == ']')
-	{
-		return true; //empty array, return true
-	}
-	else if (current_char == ',')
-	{
-        logic_error ex("Extra comma found"); //extra comma after '['
-        throw std::exception(ex);
-	}
-	while (true)
-	{
-		if (current_char == ']')
-		{
-            logic_error ex("Extra comma found"); //extra comma, this is testing while it has iterations
-            throw std::exception(ex);
-		}
-		else if (current_char == '"')
-		{
-			validateString(); //string
-		}
-		else if (current_char == '-' || (current_char >= 48 && current_char <= 57))
-		{
-			validateNumber(); //number
-		}
-		else if (current_char == '{')
-		{
-			if (!validateObject())
-			{ //object
-				return false;
-			}
-		}
-		else if (current_char == '[')
-		{
-			if (!validateArray())
-			{ //array
-				return false;
-			}
-		}
-		else if (current_char == 't' || current_char == 'f' || current_char == 'n')
-		{
-			validateTFN(); //test the special value true/false/null
-		}
-		else
-		{
-			return false;
-		}
-		switch (nextRealChar())
-		{
-		case ',':
-			nextRealChar(); //it still has other elements
-			continue;
-		case ']':
-			return true; //no other elements
-		default:
-			return false; //error char
-		}
-	}
 }
 
 //validate the array structure in parallel
@@ -621,32 +432,28 @@ bool isJSON(string input)
 //Main function to validate the JSON file in parallel
 bool isJSON_parallel(string input)
 {
-    bool first_step = isJSON(input);
-    if(first_step == false){
-        return false;
-    }
-    try{
-        int num_threads = validate_string.size();
-        pthread_t tids[num_threads];
-        struct thread_data td[num_threads];
-        int i;
-        int ret;
-        for(i = 0; i < num_threads; i++)
-        {
-            td[i].input_string = validate_string[i];
-            ret = pthread_create(&tids[i], NULL, validateString_parallel, (void*)&td[i]);
-            if (ret)
-            {
-                cout << "Error:unable to create thread "<< ret << endl;
-                exit(-1);
+    if(isJSON(input) == false){
+        return false; //validate result is false without validating strings
+    }else{ //validate result is true before validating strings
+        try { //validate strings
+            int num_threads = validate_string.size(); //set the size as the number of strings
+            pthread_t tids[num_threads];
+            struct thread_data td[num_threads];
+            int i;
+            int ret;
+            for (i = 0; i < num_threads; i++) {
+                td[i].input_string = validate_string[i];
+                ret = pthread_create(&tids[i], nullptr, validateString_parallel, (void *) &td[i]);
+                if (ret) {
+                    cout << "Error:unable to create thread " << ret << endl;
+                    exit(-1);
+                }
             }
+            return true; //all the strings passed
+        }catch (exception e) {
+            return false; //exceptions while validating strings
         }
-        pthread_exit(NULL);
-    }catch (exception e)
-        {
-            return false;
-        }
-    return true;
+    }
 }
 
 //Main function (Program entry)
