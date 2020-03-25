@@ -15,14 +15,17 @@ using namespace std;
 class JsonValidator
 {
 private:
-	int array_pointer = 0;
-	string input_string;
-	char current_char = '\0';
-	vector<string> validate_string;
-	
-	struct thread_data{
-		string input_string;
-	};
+
+    int array_pointer = 0; //give the position of the char which will be validated in the string
+    string input_string; //the string which is waiting for validating
+    char current_char = '\0'; //the char which will be validated in the string
+
+    struct thread_data{
+        vector<int> string_position; //the start and end positions of a string in step 2
+    };
+    struct thread_data td[6];
+
+    int td_index = 0; //record which element to put in td
 
 	//Read a file and transfer it to a String by giving its file path
 	string readFileToString(string filename);

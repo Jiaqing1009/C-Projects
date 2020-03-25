@@ -1,13 +1,17 @@
 #include"JsonValidator.h"
 
-int array_pointer = 0;
-string input_string;
-char current_char = '\0';
-vector<string> validate_string;
+#define NUM_THREADS 6 //set the number of threads as the number of cores
+
+int array_pointer = 0; //give the position of the char which will be validated in the string
+string input_string; //the string which is waiting for validating
+char current_char = '\0'; //the char which will be validated in the string
 
 struct thread_data{
-    string input_string;
+    vector<int> string_start_position; //the start positions of a string in step 2
 };
+struct thread_data td[NUM_THREADS]; //set the number of elements as the number of threads
+
+int td_index = 0; //record which element to put in td
 
 bool validateArray_parallel();
 
@@ -79,43 +83,37 @@ void *validateString_parallel(void *thread_string)
     struct thread_data *my_data;
     my_data = (struct thread_data *) thread_string;
     string special = "\"\\/bfnrtu";
-    int index = 0 ;
-    do
-    {
-        if (my_data->input_string[index] == '\\')
-        {
-            if (special.find(my_data->input_string[index++]) == string::npos)
-            {
-                logic_error ex("Invalid escape char found"); //fixed char after '\' check
-                throw std::exception(ex);
-            }
-            if (my_data->input_string[index] == 'u')
-            { //check unicode format 0-9 a-f A-F
-                for (int i = 0; i < 4; i++)
-                {
-                    char validate_unicode = my_data->input_string[index++]; // check unicode format
-                    if (validate_unicode < 48 || (validate_unicode > 57 && validate_unicode < 65) || (validate_unicode > 70 && validate_unicode < 97) || validate_unicode > 102)
-                    {
-                        logic_error ex("Invalid hex found");
-                        throw std::exception(ex);
+    int input_string_index;
+    for(int my_data_index = 0 ; my_data_index < my_data->string_start_position.size() ; ++my_data_index) {
+        input_string_index = my_data->string_start_position[my_data_index] + 1; //skip the first char (")
+        do {
+            if (input_string[input_string_index] == '\\') {
+                if (special.find(input_string[++input_string_index]) == string::npos) {
+                    logic_error ex("Invalid escape char found"); //fixed char after '\' check
+                    throw std::exception(ex);
+                }
+                if (input_string[input_string_index] == 'u') { //check unicode format 0-9 a-f A-F
+                    for (int i = 0; i < 4; i++) {
+                        char validate_unicode = input_string[input_string_index++]; // check unicode format
+                        if (validate_unicode < 48 || (validate_unicode > 57 && validate_unicode < 65) ||
+                            (validate_unicode > 70 && validate_unicode < 97) || validate_unicode > 102) {
+                            logic_error ex("Invalid hex found");
+                            throw std::exception(ex);
+                        }
                     }
+                } else if (input_string[input_string_index] == '"') {
+                    input_string_index++; //make the '\"' correct while it comes with the '"'
                 }
             }
-            else if (my_data->input_string[index] == '"')
-            {
-                index++; //make the '\"' correct while it comes with the '"'
-            }
+        } while (input_string[input_string_index] >= 32 && input_string[input_string_index] != 34 &&
+                input_string[input_string_index] != 127);
+        if (input_string[input_string_index] == 0) {
+            logic_error ex("Unclosed quote found");
+            throw std::exception(ex);
+        } else if (input_string[input_string_index] != 34) {
+            logic_error ex("Invalid string found");
+            throw std::exception(ex);
         }
-    } while (my_data->input_string[index] >= 32 && my_data->input_string[index] != 34 && my_data->input_string[index] != 127);
-    if (my_data->input_string[index] == 0)
-    {
-        logic_error ex("Unclosed quote found");
-        throw std::exception(ex);
-    }
-    else if (my_data->input_string[index] != 34)
-    {
-        logic_error ex("Invalid string found");
-        throw std::exception(ex);
     }
     pthread_exit(nullptr);
 }
@@ -202,17 +200,15 @@ void validateTFN()
 //skip and store the string in the first step
 void skipString()
 {
-    string skip_string = "";
-    bool check_special = false;
+    td[td_index%NUM_THREADS].string_start_position.push_back(array_pointer);//store the start position (") of a string
+    bool check_special;
     do{
         check_special = false;
         current_char = nextChar();
         if(current_char == '\\'){
             check_special = true ;
-            skip_string = skip_string + current_char;
             current_char = nextChar();
         }
-        skip_string = skip_string + current_char;//add next char until this is the end of the string
     }while (current_char >= 32 && current_char != 34 && current_char != 127 && check_special == false);
     if (current_char == 0)
     {
@@ -224,7 +220,7 @@ void skipString()
         logic_error ex("Invalid string found");
         throw std::exception(ex);
     }
-    validate_string.push_back(skip_string);
+    td_index++; //finish putting one start position of a string
 }
 
 //validate the object structure in parallel
@@ -436,13 +432,11 @@ bool isJSON_parallel(string input)
         return false; //validate result is false without validating strings
     }else{ //validate result is true before validating strings
         try { //validate strings
-            int num_threads = validate_string.size(); //set the size as the number of strings
-            pthread_t tids[num_threads];
-            struct thread_data td[num_threads];
+            pthread_t tids[NUM_THREADS]; //define the ID of the thread
             int i;
             int ret;
-            for (i = 0; i < num_threads; i++) {
-                td[i].input_string = validate_string[i];
+            for (i = 0; i < NUM_THREADS; i++) {
+                //ID of created thread, thread parameter, called function, passed in function parameter
                 ret = pthread_create(&tids[i], nullptr, validateString_parallel, (void *) &td[i]);
                 if (ret) {
                     cout << "Error:unable to create thread " << ret << endl;

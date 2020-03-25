@@ -395,10 +395,9 @@ bool isJSON(string input)
 }
 
 //Main function (Program entry)
-int main()
+int main(int argc,char *argv[])
 {
-	string file_name;
-	cin >> file_name;
+	string file_name = argv[1];
 	clock_t begin, end;
 	double cost;
 	begin = clock();
