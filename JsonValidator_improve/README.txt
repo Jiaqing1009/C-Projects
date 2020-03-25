@@ -8,5 +8,8 @@ Some correct and wrong test cases are included in folder jsonchecker.
 
 Some larger test cases are included in folder jsonexamples.
 
-The renttherunway_final_data.json, which is 120,364 KB, is also given in the following link:
-https://www.kaggle.com/rmisra/clothing-fit-dataset-for-size-recommendation
+To run this program, after clone this repo, for example:
+
+$ g++ JsonValidator.cpp -std=c++0x -pthread -o JsonValidator
+
+$ ./JsonValidator canada_large.json
