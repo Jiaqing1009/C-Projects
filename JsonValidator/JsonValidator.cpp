@@ -400,10 +400,10 @@ int main(int argc,char *argv[])
 	string file_name = argv[1];
 	clock_t begin, end;
 	double cost;
-	begin = clock();
+    string input_file = readFileToString(file_name);
+    begin = clock();
+    trim(input_file);
 	try {
-		string input_file = readFileToString(file_name);
-		trim(input_file);
 		if (isJSON(input_file) == true)
 		{
 			cout << "pass" << endl;

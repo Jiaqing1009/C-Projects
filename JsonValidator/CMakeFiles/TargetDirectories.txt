@@ -1,3 +1,0 @@
-/Users/jiaqingchen/CProjects/JsonValidator/CMakeFiles/rebuild_cache.dir
-/Users/jiaqingchen/CProjects/JsonValidator/CMakeFiles/edit_cache.dir
-/Users/jiaqingchen/CProjects/JsonValidator/CMakeFiles/JsonValidator.dir

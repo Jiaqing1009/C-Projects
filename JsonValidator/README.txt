@@ -1,6 +1,6 @@
 This is a small tool to identify whether a file is a JSON file.
 
-After running this program, you need to first give the path of the file to be tested.
+To start running this program, you need to give the path of the file to be tested while running.
 
 The program will give the running result and running time after running.
 

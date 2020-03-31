@@ -5,11 +5,15 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <stdlib.h>
 #include <time.h>
 #include <pthread.h>
 #include <vector>
 #include <thread>
+#include <wmmintrin.h>
+#include <x86intrin.h>
+#include <nmmintrin.h>
+#include <chrono>
+#include <zconf.h>
 using namespace std;
 
 class JsonValidator
@@ -17,21 +21,21 @@ class JsonValidator
 private:
 
     int array_pointer = 0; //give the position of the char which will be validated in the string
-    string input_string; //the string which is waiting for validating
+    char* input_string; //the string which is waiting for validating
     char current_char = '\0'; //the char which will be validated in the string
+    size_t input_end; //the end of the input char array
 
     struct thread_data{
-        vector<int> string_position; //the start and end positions of a string in step 2
+        vector<int> string_start_position; //the start positions of a string in step 2
     };
-    struct thread_data td[6];
 
     int td_index = 0; //record which element to put in td
 
-	//Read a file and transfer it to a String by giving its file path
-	string readFileToString(string filename);
+    //Read a file and transfer it to a char* by giving its file path
+    char* read_file_to_char(char* file_path);
 
-	//Remove '\n' '\r' and ' ' before and after input string
-	string& trim(string& str);
+    //Remove '\n' '\r' and ' ' before and after input string in parallel
+    inline void trim_parallel(char *bytes, size_t howmany);
 
 public:
 
@@ -57,10 +61,10 @@ public:
 	void validateTFN();
 
 	//Main function to validate the JSON file
-	bool isJSON(const std::wstring &input);
+	static bool isJSON(const std::wstring &input);
 
 	//Main function to validate the JSON file in parallel
-	bool isJSON_parallel(string input);
+	static bool isJSON_parallel(string input);
 
 	//Main function (Program entry)
 	int main(int argc,char *argv[]);
