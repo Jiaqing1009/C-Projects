@@ -365,7 +365,6 @@ static bool isJSON(){
 		case '[': //an array at the outset
 			if (nextRealChar() == ']'){
                 if (array_pointer <= input_end && nextRealChar() != input_string[array_pointer]){
-                    cout << "end" <<endl ;
 					return false; //there are other chars after the outset array
 				}
 				return true; //there is nothing after the outset array
@@ -373,7 +372,6 @@ static bool isJSON(){
 			array_pointer--; //Go back one char and then go to the array validator
 			if (validateArray_parallel() == true){
                 if (array_pointer <= input_end && nextRealChar() != input_string[array_pointer]){
-                    cout << "end" <<endl ;
 					return false; //there are other chars after the outset array
 				}
 				return true; //there is nothing after the outset array
