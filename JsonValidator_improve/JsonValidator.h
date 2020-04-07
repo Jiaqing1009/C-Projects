@@ -14,6 +14,7 @@
 #include <nmmintrin.h>
 #include <chrono>
 #include <zconf.h>
+#include <cstring>
 using namespace std;
 
 class JsonValidator
