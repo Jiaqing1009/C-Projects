@@ -68,6 +68,7 @@ struct compareDepth{
 int * validator(){
     int node_count = 0;
     int depth_count = 0;
+    //Calculate node and depth, the first scan
     for(int i = 0 ; i < strlen(input_string) ; i++){
         if(input_string[i]=='['){
             input_char.push_back(i);
@@ -79,88 +80,98 @@ int * validator(){
             depth_count--;
         }
     }
-    //the size of node vector should be equal to that of depth vextor
-    int array_size = node.size(); //the following arrays have the same size
+    //the following arrays have the same size
+    int array_size = node.size();
+    //Store the index and depth pairs prepared to sort
     for(int i = 0 ; i < array_size; i++){
         index_depth local_pair  = {node[i],depth[i]};
         index_depth_pairs.push_back(local_pair);
     }
+    //the only one sort operation
     sort(index_depth_pairs.begin(), index_depth_pairs.end(), compareDepth());
     //create arrays based on the size of node vector
     int * bfs = NULL;
     bfs = new int [array_size];
     int * par = NULL;
     par = new int [array_size];
+    //Initialize the par array
     for(int i = 0; i < array_size; i++){
         par[i] = -1;
     }
     int * parent = NULL;
     parent = new int [array_size];
+    //Initialize the parent array
     for(int i = 0; i < array_size; i++){
         parent[i] = -1;
     }
     int * count = NULL;
     count = new int [array_size];
+    //Initialize the count array
     for(int i = 0; i < array_size; i++){
         count[i] = -1;
     }
     int * nchild = NULL;
     nchild = new int [array_size];
+    //Initialize the nchild array
     for(int i = 0; i < array_size; i++){
         nchild[i] = 0;
     }
     int * alloc = NULL;
     alloc = new int [array_size];
+    //Initialize the alloc[0]
     alloc[0] = 0;
-    //Calculate bfs
+    //Calculate bfs, the first scatter
     for (int i = 0; i < array_size; i++){
         bfs[index_depth_pairs[i].index] = i;
     }
-    //Calculate par
+    //Calculate par, the second scatter
     for(int i = 0; i < array_size; i++){
         if(depth[i-1]+1 == depth[i]){
             par[bfs[i]] = bfs[i-1];
         }
     }
-    //Calculate parent and count
+    //Calculate parent, count and nchild, the second scan
     int local_number;
     int local_count;
-    for(int i = 1; i < array_size; i++){
-        if(par[i]!= -1){
-            local_number = par[i];
-            parent[i] = local_number;
-            local_count = 1;
-            count[i] = local_count;
-            local_count++;
-        }
-        else{
-            parent[i] = local_number;
-            count[i] = local_count;
-            local_count++;
-        }
-    }
-    //Calculate nchild
     for(int i = 0; i < array_size; i++){
+        //Calculate parent and count
+        if(i != 0){
+            if(par[i]!= -1){
+                local_number = par[i];
+                parent[i] = local_number;
+                local_count = 1;
+                count[i] = local_count;
+                local_count++;
+            }
+            else{
+                parent[i] = local_number;
+                count[i] = local_count;
+                local_count++;
+            }
+        }
+        //Calculate nchild
         if(parent[i]!=-1){
             nchild[parent[i]]++;
         }
     }
-    //Calculate alloc
+    //Calculate alloc, the third scan
     for(int i = 1; i < array_size; i++){
         alloc[i] = alloc[i-1]+nchild[i-1]+1;
     }
-    //Put results together and get the final result
+    //Put results together and generate the final result
     int value_size = input_char.size()-1;
     int * value = NULL;
     value = new int [value_size];
     for(int i = 0; i < value_size; i++){
         value[i] = 0;
     }
+    //the third scatter
     for(int i = 0; i < array_size ; i++){
         if(nchild[i]!=0){
             value[alloc[i]] = nchild[i];   
         }
     }
+    //the fourth scatter
     for(int i = 1; i < array_size ; i++){
         value[parent[i]+node[i]] = alloc[i];
     }
